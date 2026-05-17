@@ -4,8 +4,8 @@ import java.time.Instant;
 
 public record MessageResponse(
         Long id,
-        String authorName,
         String content,
+        Long authorId,
         Instant createdAt
 ) {
 }

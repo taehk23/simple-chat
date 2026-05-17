@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class FileMessageRepository {
 
@@ -32,20 +33,11 @@ public class FileMessageRepository {
         }
     }
 
-    public synchronized Long generateId() {
-        try (var paths = Files.list(filePath)) {
-            return paths
-                    .filter(path -> path.toString().endsWith(".json"))
-                    .map(path -> path.getFileName().toString().replace(".json", ""))
-                    .map(Long::parseLong)
-                    .max(Long::compareTo)
-                    .orElse(1L);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public synchronized Message save(Message message) {
+        if(message.getId() == null) {
+            message.setId(generateId());
+        }
+
         Path path = getFilePath(message.getId());
         try {
             objectMapper.writeValue(path.toFile(), message);
@@ -91,6 +83,19 @@ public class FileMessageRepository {
     }
 
     private Path getFilePath(Long id) { return filePath.resolve(id + ".json"); }
+
+    private Long generateId() {
+        try (Stream<Path> paths = Files.list(filePath)) {
+            return paths
+                    .filter(path -> path.toString().endsWith(".json"))
+                    .map(path -> path.getFileName().toString().replace(".json", ""))
+                    .map(Long::parseLong)
+                    .max(Long::compareTo)
+                    .orElse(0L) + 1;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private Message read(Path path) {
         try {
