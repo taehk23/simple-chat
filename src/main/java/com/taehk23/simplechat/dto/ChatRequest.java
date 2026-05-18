@@ -1,9 +1,9 @@
 package com.taehk23.simplechat.dto;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.taehk23.simplechat.network.RequestType;
 
 public record ChatRequest(
-        String type,
-        JsonNode body
+        RequestType type,
+        String body
 ) {
 }

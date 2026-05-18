@@ -1,5 +1,8 @@
 package com.taehk23.simplechat.network;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.taehk23.simplechat.dto.ChatRequest;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,7 +21,15 @@ public class ChatClient {
                     new InputStreamReader(socket.getInputStream())
             );
 
-            writer.write(message);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            ChatRequest rq = new ChatRequest(
+                    RequestType.SEND,
+                    "hello"
+            );
+            String json = objectMapper.writeValueAsString(rq);
+
+            writer.write(json);
             writer.newLine();
             writer.flush();
 
