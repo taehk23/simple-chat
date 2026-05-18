@@ -18,6 +18,14 @@ public class MessageService {
     }
 
     public synchronized MessageResponse send(CreateMessageRequest rq) {
+        if(rq.authorId() == null) {
+            throw new RuntimeException("authorId is required");
+        }
+
+        if(rq.content() == null || rq.content().isBlank()) {
+            throw new RuntimeException("content is required");
+        }
+
         Message message = new Message(
                 rq.content(),
                 rq.authorId()
@@ -28,6 +36,10 @@ public class MessageService {
     }
 
     public List<MessageResponse> load(FindMessageRequest rq) {
+        if(rq.size() <= 0) {
+            throw new RuntimeException("size must be positive");
+        }
+
         return messageRepo.findLastMessages(rq.size()).stream()
                 .map(this::messageMapper)
                 .toList();

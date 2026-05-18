@@ -6,6 +6,7 @@ import com.taehk23.simplechat.dto.ChatRequest;
 import com.taehk23.simplechat.dto.CreateMessageRequest;
 import com.taehk23.simplechat.dto.DeleteMessageRequest;
 import com.taehk23.simplechat.dto.DeleteMessageResponse;
+import com.taehk23.simplechat.dto.ErrorResponse;
 import com.taehk23.simplechat.dto.FindMessageRequest;
 import com.taehk23.simplechat.dto.UpdateMessageRequest;
 import com.taehk23.simplechat.service.MessageService;
@@ -47,14 +48,13 @@ public class ChatServer {
                             new OutputStreamWriter(socket.getOutputStream())
                     );
 
-                    String line = reader.readLine();
-                    ChatRequest rq = mapper.readValue(line, ChatRequest.class);
-
                     Object response;
                     try {
+                        String line = reader.readLine();
+                        ChatRequest rq = mapper.readValue(line, ChatRequest.class);
                         response = handleRequest(rq);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        response = new ErrorResponse(e.getMessage());
                     }
 
                     String responseJson = mapper.writeValueAsString(response);
