@@ -33,9 +33,9 @@ public class MessageService {
                 .toList();
     }
 
-    public MessageResponse modify(Long id, UpdateMessageRequest rq) {
-        Message message = messageRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Message with id " + id + " not found"));
+    public MessageResponse modify(UpdateMessageRequest rq) {
+        Message message = messageRepo.findById(rq.id())
+                .orElseThrow(() -> new RuntimeException("Message with id " + rq.id() + " not found"));
 
         if(!message.getAuthorId().equals(rq.authorId())) {
             throw new RuntimeException("Only the author can modify this message.");
@@ -46,15 +46,15 @@ public class MessageService {
         return messageMapper(message);
     }
 
-    public void delete(Long id, DeleteMessageRequest rq) {
-        Message message = messageRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Message with id " + id + " not found"));
+    public void delete(DeleteMessageRequest rq) {
+        Message message = messageRepo.findById(rq.id())
+                .orElseThrow(() -> new RuntimeException("Message with id " + rq.id() + " not found"));
 
         if(!message.getAuthorId().equals(rq.authorId())) {
             throw new RuntimeException("Only the author can delete this message.");
         }
 
-        messageRepo.deleteById(id);
+        messageRepo.deleteById(rq.id());
     }
 
     private MessageResponse messageMapper(Message message) {
