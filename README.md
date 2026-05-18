@@ -184,13 +184,18 @@ sequenceDiagram
     end
 ```
 
+## 실행 방법
+- IDE에서 `ServerApp`을 먼저 실행한다.
+- `ServerApp`이 돌아가고 있는 상태에서 `ClientApp`을 실행한다.
+- 요청 메서드를 변경하려면 `ClientApp`의 코드를 수정한다.
+
 ## 주요 선택의 근거
 
 - 네트워크 프레임워크 대신 `ServerSocket`, `Socket`을 사용해 raw level API 조건을 만족했다.
 - Network module과 Message 관련 module을 Java package 기준으로 분리했다.
-- memory DB를 사용하지 않고 메시지별 JSON 파일을 로컬 파일 시스템에 저장했다.
+- 별도 DB 설치 없이 실행과 검증이 가능하도록, 메시지별 JSON 파일을 로컬 파일 시스템에 저장했다.
 - 삭제는 별도 정리 작업이 없는 소규모 구현이라는 점을 고려해 hard delete로 처리했다.
-- 수정 메시지의 상대방 반영은 실시간 push가 아닌 이후 LOAD 요청에서 반영되는 방식으로 제한했다.
+- raw Socket 기반 소규모 프로젝트라는 특성에 맞추어 수정 메시지의 상대방 반영은 실시간 push가 아닌 이후 LOAD 요청에서 반영되는 방식으로 제한했다.
 - 상대방 discovery가 제외된 요구사항에 맞춰 단일 1:1 대화방을 가정했다.
 
 ## 개발 과정 중 주요 이슈와 해결 방식
@@ -208,7 +213,7 @@ sequenceDiagram
 
 - 프롬프트 요지: Java Socket 기반 1:1 채팅 사전과제 요구사항을 만족하는 설계서 구조와 누락 항목 검토를 요청했다.
 - 활용 결과: 모듈 분리 기준, 1:1 대화방 가정, 수정 메시지 반영 방식, hard delete 정책을 문서에 반영했다.
-- 수정 방식: 실제 구현 코드와 맞지 않는 ErrorResponse, authorName 등은 제거하거나 authorId 기준으로 수정했다.
+- 수정 방식: 초기 설계와 달라졌지만 README에 반영되지 않은 ErrorResponse, authorName 등은 현재 코드에 맞게 수정했다.
 
 ### 코드 검토
 
